@@ -4,6 +4,7 @@ import {
     isArray
 } from "lodash/fp";
 import { isRootComponent } from "./searchComponents";
+import { componentName, isComponentSet } from "./createProps";
 
 export const libraryDependencies = (allComponents, lib) => {
 
@@ -33,13 +34,13 @@ export const componentDependencies = (pages, allComponents, dependsOn) => {
 
     const traverseProps = (props) => {
      
-        if(props._component && props._component === dependsOn.name) {
+        if(componentName(props._component) === dependsOn.name) {
             return true;
         } 
 
         for(let propName in props) {
             const prop = props[propName];
-            if(isPlainObject(prop) && prop._component) {
+            if(isPlainObject(prop) && isComponentSet(prop._component)) {
                 if(traverseProps(prop)) return true;
             }
             if(isArray(prop)) {

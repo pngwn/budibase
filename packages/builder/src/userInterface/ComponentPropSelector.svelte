@@ -8,7 +8,7 @@ import Button from "../common/Button.svelte";
 import ButtonGroup from "../common/ButtonGroup.svelte";
 import UIkit from "uikit";
 import {
-    getComponentInfo
+    getComponentInfo, isComponentSet, componentName
 } from "./pagesParsing/createProps";
 import { store } from "../builderStore";
 
@@ -31,8 +31,8 @@ store.subscribe(s => {
     allComponents = s.allComponents;
 });
 
-$: componentSelected = props._component.length > 0;
-$: shortName = last(props._component.split("/"));
+$: componentSelected = isComponentSet(props._component);
+$: shortName = last(componentName(props._component).split("/"));
 
 const chooseComponent = () => {
     modalAction = CHOOSE_COMPONENT;

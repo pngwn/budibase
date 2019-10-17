@@ -58,7 +58,7 @@ const clickHandler = () => {
      use:cssVars={styleVars}
      bind:this={componentElement}
      on:click={clickHandler}>
-    {component && component._component ? "" : text}
+    {_bb.isComponentSet(component) ? "" : text}
 </div>
 
 <style>

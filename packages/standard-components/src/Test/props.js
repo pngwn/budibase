@@ -21,6 +21,41 @@ export const props = {
         ]
     },
 
+    yeo: {
+        _component: "##if",
+        if: {
+            "$store.someProp === 'some value'": {
+                _component: "my-component",
+                texxt: "hello"
+            }
+        },
+        else: {}        
+    },
+
+    yeo2: {
+        _component: {
+            name: "components/button",
+            if: "$store.someProp === 'some value'"
+        },
+        text: "Click Me"        
+    },
+
+    yeo3: {
+        _if: [
+            {
+                condition: "$store.someProp === 'some value'",
+                then: {
+                    _component: {
+
+                    }
+                }
+            },
+        ],
+        _else: [
+
+        ]
+    },
+
     nav: {
         _component: "components/nav",
         navBarBackground: "red",

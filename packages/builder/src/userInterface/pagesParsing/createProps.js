@@ -1,15 +1,8 @@
 import {
-    isString, 
-    isUndefined,
-    find,
-    keys,
-    uniq,
-    some,
-    filter,
-    reduce,
-    cloneDeep,
-    includes,
-    last
+    isString, isUndefined, find,
+    keys, uniq, some, filter,
+    reduce, cloneDeep, includes,
+    last, isPlainObject
 } from "lodash/fp";
 import { types, expandPropsDefinition } from "./types";
 import { assign } from "lodash";
@@ -68,10 +61,13 @@ export const getNewComponentInfo = (allComponents, inherits) => {
 
 
 export const getComponentInfo = (allComponents, comp, stack=[], subComponentProps=null) => {
-    const component = isString(comp) 
-                      ? find(c => c.name === comp)(allComponents)
-                      : comp;
-    const cname = isString(comp) ? comp : comp.name;
+    // comp may be one of 3 things:
+    // - name: "components/my-component-name"
+    // - _component obj {name: "components/my-component-name", if: "..", each: ""}
+    // - a full component {name: components/my-component-name", props: ".."}
+    
+    const cname = componentName(comp);
+    const component = find(c => c.name === cname)(allComponents);
     if(isRootComponent(component)) {
         subComponentProps = subComponentProps||{};
         const p = createProps(cname, component.props, subComponentProps);
@@ -97,7 +93,7 @@ export const getComponentInfo = (allComponents, comp, stack=[], subComponentProp
         ]);
 
         const fullProps = cloneDeep(p.props);
-        fullProps._component = targetComponent.name;
+        setComponentName(fullProps, targetComponent.name);
 
         return ({
             propsDefinition:expandPropsDefinition(component.props), 
@@ -115,6 +111,22 @@ export const getComponentInfo = (allComponents, comp, stack=[], subComponentProp
         component.inherits, 
         [component, ...stack],
         {...component.props, ...subComponentProps});
+}
+
+export const componentName = _component => 
+    isString(_component) ? _component 
+    : isPlainObject(_component) ? _component.name
+    : "";
+
+export const isComponentSet = _component => 
+    !!componentName(_component) ;
+
+export const setComponentName = (props, name) => {
+    if(isPlainObject(props._component)) {
+        props._component.name = name;
+    } else {
+        props._component = name;
+    }
 }
 
 export const createProps = (componentName, propsDefinition, derivedFromProps) => {

@@ -1,5 +1,6 @@
 import { 
-    getComponentInfo, createProps, getInstanceProps 
+    getComponentInfo, createProps, getInstanceProps,
+    setComponentName, isComponentSet
 } from "./createProps";
 
 export const buildPropsHierarchy = (allComponents, baseComponent) => {
@@ -7,7 +8,7 @@ export const buildPropsHierarchy = (allComponents, baseComponent) => {
     const buildProps = (componentName, propsDefinition, derivedFromProps) => {
 
         const {props} = createProps(componentName, propsDefinition, derivedFromProps);
-        props._component = componentName;
+        setComponentName(props, componentName);
         for(let propName in props) {
             if(propName === "_component") continue;
 
@@ -17,7 +18,7 @@ export const buildPropsHierarchy = (allComponents, baseComponent) => {
 
                 const subComponentProps = props[propName];
                 
-                if(!subComponentProps._component) continue;
+                if(!isComponentSet(subComponentProps._component)) continue;
 
                 const propComponentInfo = getComponentInfo(
                     allComponents, subComponentProps._component);

@@ -1,9 +1,4 @@
-import { 
-    split,
-    last
-} from "lodash/fp";
 import {writable} from "svelte/store";
-import { $ } from "./core/common";
 import { 
     setupBinding 
 } from "./state/stateBinding";
@@ -12,6 +7,7 @@ import { getStateOrValue } from "./state/getState";
 import { setState, setStateFromBinding } from "./state/setState";
 import { trimSlash } from "./common/trimSlash";
 import { isBound } from "./state/isState";
+import { splitName, isComponentSet } from "./common/componentObj";
 
 export const createApp = (componentLibraries, appDefinition, user) => {
 
@@ -107,6 +103,7 @@ export const createApp = (componentLibraries, appDefinition, user) => {
         setState: (path, value) => setState(store, path, value),
         getStateOrValue: (prop, currentContext) => 
             getStateOrValue(globalState, prop, currentContext),
+        isComponentSet: (component) => component && isComponentSet(component._component),
         bindings,
         context,        
     });
@@ -115,17 +112,5 @@ export const createApp = (componentLibraries, appDefinition, user) => {
 
 }
 
-
-const splitName = fullname => {
-    const componentName = $(fullname, [
-        split("/"),
-        last
-    ]);
-
-    const libName =fullname.substring(
-        0, fullname.length - componentName.length - 1);
-
-    return {libName, componentName}; 
-}
 
 

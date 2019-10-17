@@ -37,7 +37,9 @@ const createClasses = (classes) => {
 	
 
 $:{
-	if(_bb && contentComponentContainer && contentComponent._component)
+	if(_bb 
+		&& contentComponentContainer 
+		&& _bb.isComponentSet(contentComponent))
 		_bb.hydrateComponent(contentComponent, contentComponentContainer);
 
 	cssVariables = {
@@ -72,7 +74,7 @@ const clickHandler = () => {
 		disabled={disabled || false} 
 		on:click={clickHandler} 
 		style={buttonStyles}>
-    {#if contentComponent && contentComponent._component}
+    {#if contentComponent && _bb.isComponentSet(contentComponent)}
 	<div bind:this={contentComponentContainer}>
 	</div>
     {:else if contentText}

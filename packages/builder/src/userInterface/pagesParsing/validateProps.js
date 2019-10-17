@@ -1,6 +1,6 @@
 import { types } from "./types";
 import { 
-    createProps, arrayElementComponentName 
+    createProps, isComponentSet , componentName
 } from "./createProps";
 import { isString } from "util";
 import { 
@@ -23,15 +23,16 @@ const makeError = (errors, propName, stack) => (message) =>
 
 export const recursivelyValidate = (rootProps, getComponent, stack=[]) => {
 
-    const getComponentPropsDefinition = componentName => {
-        if(componentName.includes(":")) {
-            const [parentComponent, arrayProp] = componentName.split(":");
+    const getComponentPropsDefinition = _component => {
+        const cName = componentName(_component);
+        if(cName.includes(":")) {
+            const [parentComponent, arrayProp] = cName.split(":");
             return getComponent(parentComponent)[arrayProp].elementDefinition;
         }
-        return getComponent(componentName);
+        return getComponent(cName);
     }
 
-    if(!rootProps._component) {
+    if(!isComponentSet(rootProps._component)) {
         const errs = [];
         makeError(errs, "_component", stack)("Component is not set");
         return errs;
@@ -102,7 +103,7 @@ export const validateProps = (propsDefinition, props, stack=[], isFinal=true, is
 
     const errors = [];
 
-    if(isFinal && !props._component && !isArrayElement) {
+    if(isFinal && !isComponentSet(props._component) && !isArrayElement) {
         makeError(errors, "_component", stack)("Component is not set");
         return errors;
         // this would break everything else anyway

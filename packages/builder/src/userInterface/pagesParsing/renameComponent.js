@@ -4,6 +4,9 @@ import {
 import {
     isRootComponent, getExactComponent
 } from "./searchComponents";
+import {
+    isComponentSet, setComponentName
+} from "./createProps";
 
 export const rename = (pages, allComponents, oldname, newname) => {
 
@@ -18,14 +21,14 @@ export const rename = (pages, allComponents, oldname, newname) => {
 
     const traverseProps = (props) => {
         let hasEdited = false;
-        if(props._component && props._component === oldname) {
-            props._component = newname;
+        if(isComponentSet(props._component) && props._component === oldname) {
+            setComponentName(props, newname);
             hasEdited = true;
         } 
 
         for(let propName in props) {
             const prop = props[propName];
-            if(isPlainObject(prop) && prop._component) {
+            if(isPlainObject(prop) && isComponentSet(prop._component)) {
                 hasEdited = traverseProps(prop) || hasEdited;
             }
             if(isArray(prop)) {
