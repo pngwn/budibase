@@ -19,7 +19,7 @@
   const single = [{ placeholder: '' }];
 
 
-  $: layout  = componentInfo._layout;
+  $: layout  = { ...componentInfo._styles.position, ...componentInfo._styles.layout };
 
   $: positions = {
     gridarea: ['Grid Area', tbrl, 'small'],

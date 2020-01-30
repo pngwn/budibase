@@ -22,6 +22,9 @@ import {
 import {
     loadLibs, loadLibUrls, loadGeneratorLibs
 } from "./loadComponentLibraries";
+import { generate_screen_css } from './generate_css';
+import { UnauthorisedError } from "../../../core/src/common/errors";
+
 
 let appname = "";
 
@@ -710,7 +713,8 @@ const addChildComponent = store => component => {
         const component_definition = Object.assign(
             cloneDeep(newComponent.fullProps), {
             _component: component,
-            _layout: {}
+            _styles: {},
+            // _id: uuid()
         })
 
         if (children) {
@@ -753,11 +757,12 @@ const setComponentProp = store => (name, value) => {
 
 const setComponentStyle = store => (name, value) => {
     store.update(s => {
-        if (!s.currentComponentInfo._layout) {
-            s.currentComponentInfo._layout = {};
+        if (!s.currentComponentInfo._styles) {
+            s.currentComponentInfo._styles = {};
         }
-        s.currentComponentInfo._layout[name] = value;
-
+        s.currentComponentInfo._styles[name] = value;
+        // s.currentFrontEndItem._compiled
+        console.log(s)
         // save without messing with the store
         _save(s.appname, s.currentFrontEndItem, store, s)
 
